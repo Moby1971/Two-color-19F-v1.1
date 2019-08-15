@@ -463,7 +463,7 @@ classdef FluorRecon
                 
                 % Working with complex PFOB spectrum: inferior results 
                 if ~R.P.phaseremoval
-                    warning('Spectrum without phase removal should be complex - not tested/implemente yet.')
+                    PFOB_alpha=[4.65,6.57,-1.87,4.84,-3.34]+ 1i*[-1.61,-2.58,4.57,0.67,-3.79]; %%??
                 end
             end
             
@@ -486,8 +486,6 @@ classdef FluorRecon
         
         
         function R = Undersample(R)
-            % Retrospectively undersample k-space
-            % Experimental 
             
             TextMessage(R.app,"K-space undersampling (compressed sensing) ... ");
             
@@ -503,8 +501,10 @@ classdef FluorRecon
             for i = 1:R.P.nacq
                 ktemp = K(:,:,:,i);
                 if strcmp(R.P.directions{i},'FH') | strcmp(R.P.directions{i},'HF')
+                    %                     ktemp=bsxfun(@times,ktemp,pattern);
                     ktemp=ktemp(pattern1(:)==1);
                 elseif strcmp(R.P.directions{i},'RL') | strcmp(R.P.directions{i},'LR')
+                    %                     ktemp=bsxfun(@times,ktemp,permute(pattern,[2 1 3]));
                     ktemp=ktemp(pattern2(:)==1);
                 else
                     error('Direction not implemented')
@@ -512,9 +512,11 @@ classdef FluorRecon
                 datatemp = [datatemp;ktemp(:)]; %save and reshape back to vector
             end
             
+            
             R.k=datatemp;
             
             %%%update Fourier Operators to undersampled Fourier operators
+            
             p=[];
             for i = 1:R.P.nacq
                 if strcmp(R.P.directions{i},'FH') | strcmp(R.P.directions{i},'HF')
@@ -531,7 +533,8 @@ classdef FluorRecon
             end
             R.Functions.FB = eval(['opBlockDiag(',inp(1:end-1),')']);  % 4 fourier ops - one for each image
             R.Functions.F = newF;
-
+            
+            
         end
         
         
@@ -539,9 +542,6 @@ classdef FluorRecon
         
         
         function R = TestMeasOp(R)
-            % Test constructed Measurement operator on dummy data
-            % Purpose: to see if peak heights/directions correspond to
-            % linear recon of acquired image
             
             TextMessage(R.app,"Generating dummy PFOB data ... ");
             
@@ -564,7 +564,7 @@ classdef FluorRecon
         
         
         function R=TranslationCorr(R)
-            % Correct for offcenter acq. by automatic registration and translation in ksp
+            %correct for offcenter acq. by automatic registration and translation in ksp
             
             if R.P.TranslationCorr
                 
@@ -585,7 +585,6 @@ classdef FluorRecon
         
         
         function R=toGPU(R)
-            % Moves arrays to the GPU for faster computation 
             
             if R.P.useGPU
                 
