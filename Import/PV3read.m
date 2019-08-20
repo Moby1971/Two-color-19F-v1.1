@@ -76,7 +76,7 @@ for i=1:length(Studyinfo)
         if isstruct(acqpinformation)
             PV3data{1}.Scan{Scan}.acqp=acqpinformation;
         else
-            disp(['Scan ' Scandirectory ' :acqp file not found (PV3read)' ])
+            %disp(['Scan ' Scandirectory ' :acqp file not found (PV3read)' ])
         end;
 
         % PVM information
@@ -85,7 +85,7 @@ for i=1:length(Studyinfo)
             if isstruct(methodinformation)
                 PV3data{1}.Scan{Scan}.method=methodinformation;
             else
-                disp(['Scan ' Scandirectory ' :method file not found (PV3read)' ])
+                %disp(['Scan ' Scandirectory ' :method file not found (PV3read)' ])
             end;
         end;
         % IMND information
@@ -94,7 +94,7 @@ for i=1:length(Studyinfo)
             if isstruct(imndinformation)
                 PV3data{1}.Scan{Scan}.imnd=imndinformation;
             else
-                disp(['Scan ' Scandirectory ' :IMND file not found (PV3read)' ])
+                %disp(['Scan ' Scandirectory ' :IMND file not found (PV3read)' ])
             end;
         end;
 
@@ -108,8 +108,8 @@ for i=1:length(Studyinfo)
             % zinnige info.
             if Scaninfo(j).isdir && ~strcmp(Reconstructiondirectory,'.') && ~strcmp(Reconstructiondirectory,'..')
                 fullpath=[Studydirectory '/' Scandirectory '/pdata/' Reconstructiondirectory];
-                disp('-------------------------------------------')
-                disp(['Read data from: ', fullpath])
+                %disp('-------------------------------------------')
+                %disp(['Read data from: ', fullpath])
                 % Reconstruction information. N/A for 2nd reconstruction of DW SE DTI dataset
                 recoinformation=jcampread([fullpath '/reco']);
                 % Reconstruction information
@@ -120,27 +120,27 @@ for i=1:length(Studyinfo)
                 % the dataset regardless of dimensions etc because this
                 % information is captured in reco and d3proc
                 if isstruct(recoinformation) && isstruct(d3procinformation) && isstruct(visupars)
-                    disp(['Scan: ' Scandirectory ', Reco: ' Reconstructiondirectory])
+                    %disp(['Scan: ' Scandirectory ', Reco: ' Reconstructiondirectory])
                     PV3data{1}.Scan{Scan}.Reconstruction{str2num(Reconstructiondirectory)}=load2dseq([fullpath '/2dseq'],d3procinformation,recoinformation);            
                     PV3data{1}.Scan{Scan}.Reconstruction{str2num(Reconstructiondirectory)}.reco=recoinformation;
                     PV3data{1}.Scan{Scan}.Reconstruction{str2num(Reconstructiondirectory)}.d3proc=d3procinformation;
                     PV3data{1}.Scan{Scan}.Reconstruction{str2num(Reconstructiondirectory)}.visupars=visupars;
                 elseif isstruct(d3procinformation) && isstruct(visupars)
-                    disp(['Scan: ' Scandirectory ', Reco: ' Reconstructiondirectory])
+                    %disp(['Scan: ' Scandirectory ', Reco: ' Reconstructiondirectory])
                     recoinfo.reco.byte_order=       'littleEndian';
                     recoinfo.reco.wordtype=         '_32BIT_SGN_INT';
                     recoinfo.reco.image_type=       'MAGNITUDE_IMAGE';  
                     recoinfo.reco.transposition=    d3procinformation.im.siz;
-                    disp('The previous information about the file "reco" is assumed, which is not necessarily')
-                    disp('correct for other reconstructions than a 2nd reco from a DW SE DTI dataset.')
-                    disp(recoinfo.reco)
+                    %disp('The previous information about the file "reco" is assumed, which is not necessarily')
+                    %disp('correct for other reconstructions than a 2nd reco from a DW SE DTI dataset.')
+                    %disp(recoinfo.reco)
                     PV3data{1}.Scan{Scan}.Reconstruction{str2num(Reconstructiondirectory)}=load2dseq([fullpath '/2dseq'],d3procinformation,recoinfo);            
                     PV3data{1}.Scan{Scan}.Reconstruction{str2num(Reconstructiondirectory)}.d3proc=d3procinformation;
                     PV3data{1}.Scan{Scan}.Reconstruction{str2num(Reconstructiondirectory)}.visupars=visupars;
                 else
-                    disp(['Scan ' Scandirectory ', Reco ' Reconstructiondirectory ' :reco file not found (PV3read)' ])
+                    %disp(['Scan ' Scandirectory ', Reco ' Reconstructiondirectory ' :reco file not found (PV3read)' ])
                 end;
-                disp('-------------------------------------------')
+                %disp('-------------------------------------------')
             end;
         end;
     end;
