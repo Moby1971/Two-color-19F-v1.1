@@ -338,14 +338,14 @@ classdef FluorRecon
         function R = DefineP(R)
             % Defines standard settings for Fluor Recon
             
-            R.P.doubleFOV = 0;                                  % no zerofilling for now
+            R.P.doubleFOV = 0;                                  % no double FOV for now
             R.P.dim = 3;                                        % 3D data
             R.P.phaseremoval = 1;                               % option to remove phase
             R.P.phasecheckerboardremoval = ~R.P.phaseremoval;
             R.P.CheckBoard = 1;                                 % apply checkerboard to k-space to remove readout/phase encoding phases
             R.P.use_empirical_alpha = 1;                        % overwrite theoretical PFOB peaks with empirical
             R.P.TranslationCorr = 1;                            % automatically translate k-spaces using image registration
-            R.P.ZeroFill = 0;                                   % enlarge kspace (resolution) by ZF
+            % R.P.ZeroFill = 0;                                 % determined by the app. enlarge kspace (resolution) by ZF
             
             R.P.visualization = 0;                              % visualization only in the App
             
