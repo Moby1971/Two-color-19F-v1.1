@@ -14,9 +14,10 @@ K1=reshape(R,[2,Enc(1),ndirs,Enc(2),Enc(3)]); %[2,ndirs,kx,ky,kz]
 
 
 K1=permute(K1,[1 3 4 5 2]);
-for i=1:Enc(2); 
-    for j=1:Enc(3); 
-        for k=1:Enc(1);
+
+for i=1:Enc(2)
+    for j=1:Enc(3)
+        for k=1:Enc(1)
             for q=1:ndirs
                 KC1(i,j,k,q)=K1(1,q,i,j,k)+1i*K1(2,q,i,j,k);
             end
