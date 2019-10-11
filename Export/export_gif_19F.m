@@ -24,9 +24,9 @@ for idx = 1:number_of_images
     image = rot90(uint8(round((63/max(PFOBmap(:)))*resizem(squeeze(PFOBmap(idx,:,:)),[numrows numcols]))));
     
     if idx == 1
-        imwrite(image,PFOBcmap,[gifexportpath,'/PFOB-',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
+        imwrite(image,PFOBcmap,[gifexportpath,filesep,'PFOB-',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
     else
-        imwrite(image,PFOBcmap,[gifexportpath,'/PFOB-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
+        imwrite(image,PFOBcmap,[gifexportpath,filesep,'PFOB-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
     end
     
 end
@@ -42,9 +42,9 @@ for idx = 1:number_of_images
     image = rot90(uint8(round((63/max(PFCEmap(:)))*resizem(squeeze(PFCEmap(idx,:,:)),[numrows numcols]))));
     
     if idx == 1
-        imwrite(image,PFCEcmap,[gifexportpath,'/PFCE-',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
+        imwrite(image,PFCEcmap,[gifexportpath,filesep,'PFCE-',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
     else
-        imwrite(image,PFCEcmap,[gifexportpath,'/PFCE-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
+        imwrite(image,PFCEcmap,[gifexportpath,filesep,'PFCE-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
     end
     
 end
