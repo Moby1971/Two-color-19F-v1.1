@@ -56,37 +56,13 @@ classdef FluorRecon
         
         function R=loadBrukerFiles(R)
             
-            for ii=1:length(R.P.scanfolders)
-                
-                TextMessage(R.app,"Loading Scan ... ");
-                
-                if R.P.Seq.Sequential == 1
-                    
-                    TextMessage(R.app,"Single file scan ... ");
-                    
-                    [K,ScanParams] = ReadFIDSequential(R.P.scanfolders{ii},R.P.Seq.ndirs,R.P.directions);
-                    
-                else
-                    
-                    [K{ii},ScanParams{ii}] = ReadFID(R.P.scanfolders{ii});
-                    
-                    %update parameters
-                    if ScanParams{ii}.Direction=='H_F'
-                        if ScanParams{ii}.scaling_read==1
-                            R.P.directions{ii}='HF';
-                        else
-                            R.P.directions{ii}='FH';
-                        end
-                    else
-                        if ScanParams{ii}.scaling_read==1
-                            R.P.directions{ii}='LR';
-                        else
-                            R.P.directions{ii}='RL';
-                        end
-                    end
-                end
-                
-            end
+            % Load the data for the FLASH_MP_19F sequence
+            % Fully sampled data
+            
+            TextMessage(R.app,"Loading scan ... ");
+            TextMessage(R.app,"Single file scan ... ");
+            
+            [K,ScanParams] = ReadFIDSequential(R.P.scanfolders{1},R.P.Seq.ndirs,R.P.directions);
             
             R.Data.K = K;
             R.P.ScanParams = ScanParams;
@@ -96,6 +72,40 @@ classdef FluorRecon
         
         
         % -----------------------------------------------------------------------------
+        
+        
+        function R=loadBrukerFilesCS(R)
+            
+            % Load the data for the FLASH_MP_CS_19F sequence
+            % Undersampled data
+            
+            TextMessage(R.app,"Loading undersampled scan ... ");
+            TextMessage(R.app,"Single file scan ... ");
+            
+            % kspace filling pattern
+            R.app.TextMessage('User-defined k-space filling ... ');
+            dimy = R.app.brukerinfo2.acq.size(2);
+            dimz = R.app.brukerinfo2.acq.size(3);
+            ky1rep = round(R.app.brukerinfo2.acq.spatial_phase_1 * (dimy/2-0.5) + dimy/2);
+            kz1rep = round(R.app.brukerinfo2.acq.spatial_phase_2 * (dimz/2-0.5) + dimz/2);
+            
+            % For now assuming no_repetitions = 1
+            no_repetitions = 1;
+            ky=[]; for i=1:no_repetitions ky = [ky, ky1rep]; end
+            kz=[]; for i=1:no_repetitions kz = [kz, kz1rep]; end
+            
+            [K,ScanParams] = ReadFIDSequentialCS(R.P.scanfolders{1},R.P.Seq.ndirs,R.P.directions,ky,kz);
+            
+            R.Data.K = K;
+            R.P.ScanParams = ScanParams;
+            
+        end
+        
+        
+        
+        % -----------------------------------------------------------------------------
+        
+        
         
         
         function R = ConjugateGradientRecon(R)

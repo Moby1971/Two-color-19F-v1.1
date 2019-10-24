@@ -1,4 +1,4 @@
-function [K,ScanParams]=ReadFIDSequential(fn,ndirs,dirs)
+function [K,ScanParams]=ReadFIDSequentialCS(fn,ndirs,dirs,ky,kz)
 [Enc,AntiAlias,Direction,scaling_read]=ReadMethods(fn);
 
 fid = fopen([fn,filesep,'fid']);
@@ -10,20 +10,27 @@ fclose(fid);
 %  P.Seq.Directions={'FH','HF','LR','RL'}
 
  
-K1=reshape(R,[2,Enc(1),ndirs,Enc(2),Enc(3)]); %[2,ndirs,kx,ky,kz]
-
-
+K1=reshape(R,[2,Enc(1),ndirs,Enc(2),Enc(3)]); %[2,ndirs,kx,ky,kz]   DATA BEFORE SORTING
 K1=permute(K1,[1 3 4 5 2]);
 
-for i=1:Enc(2)
-    for j=1:Enc(3)
-        for k=1:Enc(1)
+K1=reshape(K1,[2,ndirs,Enc(2)*Enc(3),Enc(1)]);    % [2, ndirs, ky*kz, kx]
+
+KC1 = zeros(Enc(2),Enc(3),Enc(1),ndirs);   % [ky, kz, kx, ndirs]
+
+% SORT THE DATA
+% KSPACE TRAJECTORY IS DEFINED IN    ky and kz
+
+for w = 1 : Enc(2)*Enc(3)   % ky and kz directions
+ 
+        for k=1:Enc(1) % readout = kx
             for q=1:ndirs
-                KC1(i,j,k,q)=K1(1,q,i,j,k)+1i*K1(2,q,i,j,k);
+                KC1(ky(w),kz(w),k,q) = KC1(ky(w),kz(w),k,q) + K1(1,q,w,k)+1i*K1(2,q,w,k);
             end
         end
-    end
+        
 end
+
+
 
 for jj=1:ndirs
     Ktemp=KC1(:,:,:,jj);
