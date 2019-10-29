@@ -1,13 +1,13 @@
-function [xreturn] = nl_conjgrad_fluor_3D(app, A, b, x, niter, nouter, outeriter, T, lambda, size,  varargin)
+function [xreturn] = nl_conjgrad_fluor_3D(app, A, b, x, niter, nouter, outeriter, T, lambda, size_im,  varargin)
 
 % TESTING 
 %1 only l1 norm on PFOB image/
 %2: l2 norm on sum of 
 
 visualizationoption=0;
-n1=size(1); 
-n2=size(2); 
-n3=size(3); 
+n1=size_im(1); 
+n2=size_im(2); 
+n3=size_im(3); 
 slice=round(n3/2);
 realI=[]; 
 

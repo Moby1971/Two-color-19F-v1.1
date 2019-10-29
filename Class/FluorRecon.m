@@ -455,6 +455,11 @@ classdef FluorRecon
             for ii=1:R.P.nacq
                 R.Functions.F{ii} = R.Functions.F3;
             end
+           
+            % 24-10-2019
+            % TO DO: ADD HERE 
+            % 
+            
             
         end
         
