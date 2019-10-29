@@ -66,7 +66,8 @@ classdef FluorRecon
             
             R.Data.K = K;
             R.P.ScanParams = ScanParams;
-            
+            R.P.CS = false; 
+
         end
         
         
@@ -98,7 +99,7 @@ classdef FluorRecon
             
             R.Data.K = K;
             R.P.ScanParams = ScanParams;
-            
+            R.P.CS = true; 
         end
         
         
@@ -125,7 +126,9 @@ classdef FluorRecon
                 end
                 
                 % inner iterations
-                RCG = nl_conjgrad_fluor_3D(R.app,R.Functions.M, R.k, RCG,R.P.niter,nouter,outeriter,R.Functions.TVOP2,R.P.lambda,[R.P.nx R.P.ny R.P.nz],R.P.visualization,R.P.visualization_slice);
+                RCG = nl_conjgrad_fluor_3D(R.app,R.Functions.M, R.k, RCG,R.P.niter,...
+                    nouter,outeriter,R.Functions.TVOP2,R.P.lambda,[R.P.nx R.P.ny R.P.nz],...
+                    R.P.visualization,R.P.visualization_slice);
                 
             end
             
@@ -219,23 +222,33 @@ classdef FluorRecon
         function R = VectorizeData(R)
             
             cmd='R.k=[';
-            
             for ii = 1:R.P.nacq
-                
                 cmd = [cmd,'R.Functions.vec(R.Data.K{',num2str(ii),'})'];
-                
                 if ii < R.P.nacq
                     cmd = [cmd,'; '];
                 else
                     cmd = [cmd,'];'];
                 end
-                
             end
-            
             eval(cmd);
-        
+            
+            
+            if R.P.CS % CS option : discard zeroes in vector
+                cmd='pats=[';
+                for ii = 1:R.P.nacq
+                    cmd = [cmd,'R.Functions.vec(abs(R.Data.K{',num2str(ii),'})>0)'];
+                    if ii < R.P.nacq
+                        cmd = [cmd,'; '];
+                    else
+                        cmd = [cmd,'];'];
+                    end
+                end
+                eval(cmd);
+                
+            R.k = R.k(pats)
+            
+            end
         end
-        
         
         % -----------------------------------------------------------------------------
         
@@ -243,11 +256,18 @@ classdef FluorRecon
         function R = PhaseRemoval(R)
             
             if R.P.phaseremoval
+                if ~R.P.CS
+                    
+                    TextMessage(R.app,"Removing phase of image data ... ");
+                    R.k = R.Functions.FB*abs(opInverse(R.Functions.FB)*R.k);
+                    
+                else
+                    
+                    TextMessage(R.app,"Removing phase of image data ... CS!!! ");
+                    R.k = R.Functions.FB*abs(opTranspose(R.Functions.FB)*R.k);
+
+                end
                 
-                TextMessage(R.app,"Removing phase of image data ... ");
-                
-                R.k = R.Functions.FB*abs(opInverse(R.Functions.FB)*R.k); 
-            
             end
             
         end
@@ -443,22 +463,43 @@ classdef FluorRecon
             TextMessage(R.app,"Constructing TV operator ... ");
             R.Functions.TVOP2=MakeTVOperator(R.P.nx);
             
-            % block diagonal operator
-            inp = [];
-            for ii = 1:R.P.nacq
-                inp = [inp,'R.Functions.F3,'];
-            end
-            R.Functions.FB=eval(['opBlockDiag(',inp(1:end-1),')']);  % 4 fourier ops - one for each image
             
             % add Fourier operator for all nacq (only for changing when
             % undersampling/different resolutions)
-            for ii=1:R.P.nacq
-                R.Functions.F{ii} = R.Functions.F3;
+            
+            if R.P.CS == false
+                % every acq. uses the fully sampled Fourier operator
+                for ii=1:R.P.nacq
+                    R.Functions.F{ii} = R.Functions.F3;
+                end
+                
+            else
+                % every acq has its own Fourier op.
+                if ~R.P.doubleFOV %for now assume oversampling has been removed by removing odd points - TO DO: remove other way (better SNR)
+                    for i = 1:R.P.nacq
+                        if strcmp(R.P.directions{i},'FH') | strcmp(R.P.directions{i},'HF')
+                            pattern=R.Data.K{i}(:,1:2:end,:); %begin at 1 or 2? wrt reversing direction...
+                        elseif strcmp(R.P.directions{i},'RL') | strcmp(R.P.directions{i},'LR')
+                            pattern=R.Data.K{i}(1:2:end,:,:);
+                        end
+                        pattern = abs(pattern)>0;
+                        
+                        %                         if strcmp(R.P.directions{i},'FH') | strcmp(R.P.directions{i},'HF')
+                        R.Functions.F{i} = opExcise(R.Functions.F3,~pattern(:),'rows');
+                        %                         elseif strcmp(R.P.directions{i},'RL') | strcmp(R.P.directions{i},'LR')
+                        %                             R.Functions.F{i} = opExcise(R.Functions.F3,~pattern(:),'rows');
+                    end
+                end
             end
-           
-            % 24-10-2019
-            % TO DO: ADD HERE 
-            % 
+            
+            
+            % Construct block-diagonal operator
+            inp = [];
+            for ii = 1:R.P.nacq
+                inp = [inp,'R.Functions.F{',num2str(ii),'},'];
+            end
+            R.Functions.FB=eval(['opBlockDiag(',inp(1:end-1),')']);  % 4 fourier ops - one for each image
+
             
             
         end
@@ -557,6 +598,7 @@ classdef FluorRecon
             % Test constructed Measurement operator on dummy data
             % Purpose: to see if peak heights/directions correspond to
             % linear recon of acquired image
+            % DOES NOT WORK WITH CS OPTION FOR NOW
             
             TextMessage(R.app,"Generating dummy PFOB data ... ");
             
