@@ -157,7 +157,7 @@ classdef FluorRecon
                 
                 RCG = nl_conjgrad_fluor_3D(R.app,R.Functions.M, R.k, RCG,R.P.niter,nouter,outeriter,R.Functions.TVOP2,R.P.lambda,[R.P.nx R.P.ny R.P.nz],R.P.visualization,R.P.visualization_slice);
                 
-                kk = BlindDeconvolutionOptimization(RCG,R.P.N,R.LinearRecon,R.P.ny,R.P.Spectrum1,R.Functions.rr,R.P.directions,1,R.P.visualization);
+                kk = BlindDeconvolutionOptimization(RCG,R.P.N,R.LinearRecon,R.P.ny,R.P.Spectrum2,R.Functions.rr,R.P.directions,1,R.P.visualization);
                 
                 UpdatedSpectrum=cell(1,4);
                 UpdatedSpectrum{1}=kk(1:R.P.nx).';
@@ -353,7 +353,7 @@ classdef FluorRecon
             R.P.phaseremoval = 1;                               % option to remove phase
             R.P.phasecheckerboardremoval = ~R.P.phaseremoval;
             R.P.CheckBoard = 1;                                 % apply checkerboard to k-space to remove readout/phase encoding phases
-            R.P.use_empirical_alpha = 1;                        % overwrite theoretical PFOB peaks with empirical
+            R.P.use_empirical_alpha = 1;                        % overwrite theoretical peaks with empirical
             R.P.TranslationCorr = 1;                            % automatically translate k-spaces using image registration
             % R.P.ZeroFill = 0;                                 % determined by the app. enlarge kspace (resolution) by ZF
             
@@ -433,7 +433,7 @@ classdef FluorRecon
             
             %functions
             R.Functions.vec= @(I) reshape(I,[numel(I), 1]); %vectorize
-            R.Functions.rr2 = @(I) reshape(I,[R.P.nx,R.P.ny,R.P.nz,2]); %resize to two images (pFOB/PFCE)
+            R.Functions.rr2 = @(I) reshape(I,[R.P.nx,R.P.ny,R.P.nz,2]); %resize to two images (C2/C1)
             R.Functions.rr1 = @(I) reshape(I,[R.P.nx,R.P.ny,R.P.nz,R.P.nacq]); %resize to nr of acqs.
             R.Functions.rr = @(I) reshape(I,[R.P.nx,R.P.ny,R.P.nz]);  %resize to 1 image
             
@@ -469,30 +469,38 @@ classdef FluorRecon
         
         function R = CalculateSpectra(R)
             
-            TextMessage(R.app,"Calculating the spectrum of PFOB and PFCE ... ");
+            % Gustav: Adapted. Now includes peak positions and heights from 2 files, which are read in the app
             
-            [PFCE,PFCE_alpha,PFOB,PFOB_alpha]=calcspectra_BW(R.P.ppm,R.P.BWpix); 
+            TextMessage(R.app,"Calculating the spectrum of compound 1 and compound 2 ... ");
             
-            if R.P.use_empirical_alpha==true
-                PFOB_alpha=R.P.empirical_alpha; %based on l2 sl62, see notes
-                
-                % Working with complex PFOB spectrum: inferior results 
-                if ~R.P.phaseremoval
-                    warning('Spectrum without phase removal should be complex - not tested/implemente yet.')
-                end
-            end
+            % Compound 1 peak positions and peak heights
+            C1 = (R.P.ppm.*R.P.empirical_ppm1)./R.P.BWpix;
+            C1_alpha = R.P.empirical_alpha1;
             
-            pixlocs=1+round(-PFOB);
-            pixlocs(pixlocs<0)=R.P.nx+pixlocs(pixlocs<0);
+            pixlocs1=1+round(-C1);
+            pixlocs1(pixlocs1<0)=R.P.nx+pixlocs1(pixlocs1<0);
             R.P.Spectrum1=zeros(1,R.P.nx);
-            R.P.Spectrum1(pixlocs)=PFOB_alpha./sum(PFOB_alpha(:));
+            R.P.Spectrum1(pixlocs1)=C1_alpha./sum(C1_alpha(:));
             
+            % Compound 2 peak positions and peak heights
+            C2 = (R.P.ppm.*R.P.empirical_ppm2)./R.P.BWpix;
+            C2_alpha = R.P.empirical_alpha2;
+            
+            pixlocs2=1+round(-C2);
+            pixlocs2(pixlocs2<0)=R.P.nx+pixlocs2(pixlocs2<0);
+            R.P.Spectrum2=zeros(1,R.P.nx);
+            R.P.Spectrum2(pixlocs2)=C2_alpha./sum(C2_alpha(:));
+       
             % construct the measurement operator
             for ii=1:R.P.nacq
-                R.P.Spectrum{ii}=(R.P.Spectrum1);
+                R.P.SpectrumC1{ii}=R.P.Spectrum1;
             end
             
-            R.Functions.M = MakeMeasurementOperator(R.P.Spectrum,R.P.nx,R.P.ny,R.P.nz,R.P.directions,R.Functions.F);
+            for ii=1:R.P.nacq
+                R.P.SpectrumC2{ii}=R.P.Spectrum2;
+            end
+            
+            R.Functions.M = MakeMeasurementOperator2C(R.P.SpectrumC1,R.P.SpectrumC2,R.P.nx,R.P.ny,R.P.nz,R.P.directions,R.Functions.F);
             
         end
         
@@ -558,7 +566,7 @@ classdef FluorRecon
             % Purpose: to see if peak heights/directions correspond to
             % linear recon of acquired image
             
-            TextMessage(R.app,"Generating dummy PFOB data ... ");
+            TextMessage(R.app,"Testing dummy data ... ");
             
             %used to compare the measurement operator with real data
             temp=zeros(R.P.nx,R.P.nx,R.P.nx,2);
@@ -589,7 +597,7 @@ classdef FluorRecon
                     
                     TextMessage(R.app,strcat("Registering direction ",num2str(ii)," ... "));
                     
-                    R.Data.K{ii} = registration_correction_PFCE(R.app,R.Data.K{ii},R.Data.K{1},0);
+                    R.Data.K{ii} = registration_correction_19F(R.app,R.Data.K{ii},R.Data.K{1},0);
                 end
             end
             
