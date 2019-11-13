@@ -432,7 +432,7 @@ classdef FluorRecon
             end
             
             %functions
-            R.Functions.vec= @(I) reshape(I,[numel(I), 1]); %vectorize
+            R.Functions.vec = @(I) reshape(I,[numel(I), 1]); %vectorize
             R.Functions.rr2 = @(I) reshape(I,[R.P.nx,R.P.ny,R.P.nz,2]); %resize to two images (C2/C1)
             R.Functions.rr1 = @(I) reshape(I,[R.P.nx,R.P.ny,R.P.nz,R.P.nacq]); %resize to nr of acqs.
             R.Functions.rr = @(I) reshape(I,[R.P.nx,R.P.ny,R.P.nz]);  %resize to 1 image
@@ -490,17 +490,9 @@ classdef FluorRecon
             pixlocs2(pixlocs2<0)=R.P.nx+pixlocs2(pixlocs2<0);
             R.P.Spectrum2=zeros(1,R.P.nx);
             R.P.Spectrum2(pixlocs2)=C2_alpha./sum(C2_alpha(:));
-       
+                   
             % construct the measurement operator
-            for ii=1:R.P.nacq
-                R.P.SpectrumC1{ii}=R.P.Spectrum1;
-            end
-            
-            for ii=1:R.P.nacq
-                R.P.SpectrumC2{ii}=R.P.Spectrum2;
-            end
-            
-            R.Functions.M = MakeMeasurementOperator2C(R.P.SpectrumC1,R.P.SpectrumC2,R.P.nx,R.P.ny,R.P.nz,R.P.directions,R.Functions.F);
+            R.Functions.M = MakeMeasurementOperator2C(R.P.Spectrum1,R.P.Spectrum2,R.P.nx,R.P.ny,R.P.nz,R.P.directions,R.Functions.F);
             
         end
         
