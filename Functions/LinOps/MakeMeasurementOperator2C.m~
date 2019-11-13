@@ -18,6 +18,9 @@ for ii=1:nacq
     B{ii} = MakeConvOperator(nx,ny,nz,S1);
 end
 
+disp(B{1}.*(1 1 1 1))
+
+
 C=MakeIdentityOperator(nx,ny,nz);   % it works better with the identity operator ???
 
 
@@ -30,7 +33,7 @@ end
 % Construct the measurement operator
 M = [];
 for ii = 1:nacq
-    M = [M;F{ii}*A{ii},F{ii}*C];
+    M = [M;F{ii}*A{ii},F{ii}*B{ii}];
 end
 
 

@@ -477,7 +477,7 @@ classdef FluorRecon
             C1 = (R.P.ppm.*R.P.empirical_ppm1)./R.P.BWpix;
             C1_alpha = R.P.empirical_alpha1;
             
-            pixlocs1=1+round(-C1);
+            pixlocs1=round(1-C1);
             pixlocs1(pixlocs1<0)=R.P.nx+pixlocs1(pixlocs1<0);
             R.P.Spectrum1=zeros(1,R.P.nx);
             R.P.Spectrum1(pixlocs1)=C1_alpha./sum(C1_alpha(:));
@@ -486,7 +486,7 @@ classdef FluorRecon
             C2 = (R.P.ppm.*R.P.empirical_ppm2)./R.P.BWpix;
             C2_alpha = R.P.empirical_alpha2;
             
-            pixlocs2=1+round(-C2);
+            pixlocs2=round(1-C2);
             pixlocs2(pixlocs2<0)=R.P.nx+pixlocs2(pixlocs2<0);
             R.P.Spectrum2=zeros(1,R.P.nx);
             R.P.Spectrum2(pixlocs2)=C2_alpha./sum(C2_alpha(:));
