@@ -26,7 +26,7 @@ rr = @(I) reshape(I,[n1,n2,n3]);
 rr1 = @(I) reshape(I,[n1,n2,n3,2]);
 
 if isempty(T)
-    T=opDirac(n1*n2*n3)
+    T=opDirac(n1*n2*n3);
 end
 
 mask=abs(b)>0; 
