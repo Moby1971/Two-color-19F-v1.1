@@ -26,10 +26,11 @@ classdef test_multicolor19F < matlab.uitest.TestCase
             fprintf('test CS data loading and recon\n')
             app = multicolor19F;
             testCase.addTeardown(@delete,app);
+            testCase.press(app.UseTestDataCheckBox);
             testCase.press(app.Load19FDataButton);
             assert(app.valid19Ffile)
-            testCase.press(app.PseudoInverseButton);
-            testCase.press(app.DeconvolutionButton);
+%             testCase.press(app.PseudoInverseButton);
+%             testCase.press(app.DeconvolutionButton);
             pause(3)
 
         end
