@@ -267,9 +267,9 @@ classdef FluorRecon
                     % rows or columns? 
                     % R.k needs to be made smaller (removal of same rows
                     % --> in vectorize)
-                    R.Functions.FBCS=opExcise(R.Functions.FB, R.k==0, 'rows')
+                    R.Functions.FBCS=opExcise(R.Functions.FB, R.k==0, 'rows');
                     R.Functions.iFBCS=opExcise(opInverse(R.Functions.FB),...
-                        R.k==0, 'columns')
+                        R.k==0, 'columns');
                     R.k(R.k ~=0) = R.Functions.FBCS*abs(R.Functions.iFBCS*R.k(R.k ~=0));
                 end
                 
