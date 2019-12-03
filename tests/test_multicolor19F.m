@@ -19,20 +19,27 @@ classdef test_multicolor19F < matlab.uitest.TestCase
             fprintf('test_GPU_checkbox\n')
             app = multicolor19F;                    %create app
             testCase.addTeardown(@delete,app);      %delete app after test
-            testCase.press(app.GPUCheckBox)
+            testCase.press(app.GPUCheckBox);
         end
          
-        function test_load_data(testCase)
+        function test_load_data_19F(testCase)
             fprintf('\nTest data loading\n')
             app = multicolor19F;
             testCase.addTeardown(@delete,app);
             testCase.press(app.UseTestDataCheckBox);
             testCase.press(app.Load19FDataButton);
             assert(app.valid19Ffile)
-%             testCase.press(app.PseudoInverseButton);
-%             testCase.press(app.DeconvolutionButton);
-            pause(3)
-
+            pause(1)
+        end
+        
+        function test_load_data_1H(testCase)
+            fprintf('\nTest data loading\n')
+            app = multicolor19F;
+            testCase.addTeardown(@delete,app);
+            testCase.press(app.UseTestDataCheckBox);
+            testCase.press(app.Load1HDataButton);
+            assert(app.valid1Hfile)
+            pause(1)
         end
         
         function test_CS_recon(testCase)
@@ -40,13 +47,15 @@ classdef test_multicolor19F < matlab.uitest.TestCase
             app = multicolor19F;
             testCase.addTeardown(@delete,app);
             testCase.press(app.UseTestDataCheckBox);
-            app.data_import_path_testdata = 'tests\testdata\MPCS\'
-            
+            app.data_import_path_test_19F = 'tests\testdata\MPCS\'
             testCase.press(app.Load19FDataButton);
             assert(app.valid19Ffile)
+            testCase.press(app.TransCorrCheckBox); %turn off registration
             testCase.press(app.PseudoInverseButton);
-%             testCase.press(app.DeconvolutionButton);
-            pause(3)
+            app.IterationsEditField.Value = 2; 
+            pause(2)
+            testCase.press(app.DeconvolutionButton);           
+
             
         end
         
