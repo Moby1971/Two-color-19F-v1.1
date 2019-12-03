@@ -23,7 +23,7 @@ classdef test_multicolor19F < matlab.uitest.TestCase
         end
          
         function test_load_data(testCase)
-            fprintf('test CS data loading and recon\n')
+            fprintf('\nTest data loading\n')
             app = multicolor19F;
             testCase.addTeardown(@delete,app);
             testCase.press(app.UseTestDataCheckBox);
@@ -34,6 +34,23 @@ classdef test_multicolor19F < matlab.uitest.TestCase
             pause(3)
 
         end
+        
+        function test_CS_recon(testCase)
+            fprintf('\nTest CS data loading and recon\n')
+            app = multicolor19F;
+            testCase.addTeardown(@delete,app);
+            testCase.press(app.UseTestDataCheckBox);
+            app.data_import_path_testdata = 'tests\testdata\MPCS\'
+            
+            testCase.press(app.Load19FDataButton);
+            assert(app.valid19Ffile)
+            testCase.press(app.PseudoInverseButton);
+%             testCase.press(app.DeconvolutionButton);
+            pause(3)
+            
+        end
+        
+        
     end
     
 end
