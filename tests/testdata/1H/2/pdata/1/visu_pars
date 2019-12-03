@@ -1,0 +1,126 @@
+##TITLE=Parameter List
+##JCAMPDX=4.24
+##DATATYPE=Parameter Values
+##ORIGIN=Bruker BioSpin MRI GmbH
+##OWNER=mri_user
+$$ Tue Sep 17 14:58:23 2019 EDT (UT-4h)  mri_user
+$$ /opt/PV5.1/data/mri_user/nmr/091719GS3.Vj1/2/pdata/1/visu_pars
+##$VisuVersion=1
+##$VisuUid=( 65 )
+<2.16.756.5.5.100.1359622924.15920.1568746703.62>
+##$VisuCreator=( 65 )
+<ParaVision>
+##$VisuCreatorVersion=( 65 )
+<5.1>
+##$VisuCreationDate=( 21 )
+<14:47:22 17 Sep 2019>
+$$ @vis= VisuVersion VisuUid VisuCreator VisuCreatorVersion VisuCreationDate
+##$VisuCoreFrameCount=1
+##$VisuCoreDim=3
+##$VisuCoreSize=( 3 )
+128 128 128
+##$VisuCoreDimDesc=( 3 )
+spatial spatial spatial
+$$ @vis= VisuInstance VisuCoreFrameCount VisuCoreDim VisuCoreSize
+##$VisuCoreExtent=( 3 )
+32 32 32
+##$VisuCoreFrameThickness=( 1 )
+32
+##$VisuCoreUnits=( 3, 65 )
+<mm> <mm> <mm>
+##$VisuCoreOrientation=( 1, 9 )
+1 0 0 0 0 -1 0 1 0
+$$ @vis= VisuCoreDimDesc VisuCoreExtent VisuCoreFrameThickness VisuCoreUnits
+##$VisuCorePosition=( 1, 3 )
+-16 -15.75 16
+##$VisuCoreDataMin=( 1 )
+261
+##$VisuCoreDataMax=( 1 )
+32765
+##$VisuCoreDataOffs=( 1 )
+0
+$$ @vis= VisuCoreOrientation VisuCorePosition VisuCoreDataMin VisuCoreDataMax
+##$VisuCoreDataSlope=( 1 )
+276.66173326836
+##$VisuCoreFrameType=MAGNITUDE_IMAGE
+##$VisuFGElemComment=( 1, 65 )
+<Movie frame 1>
+$$ @vis= VisuCoreDataOffs VisuCoreDataSlope VisuCoreFrameType
+##$VisuCoreWordType=_16BIT_SGN_INT
+##$VisuCoreByteOrder=littleEndian
+##$VisuCoreDiskSliceOrder=disk_reverse_slice_order
+$$ @vis= VisuFGElemComment VisuCore VisuCoreWordType VisuCoreByteOrder
+##$VisuFGOrderDescDim=1
+##$VisuFGOrderDesc=( 1 )
+(1, <FG_MOVIE>, <>, 0, 2)
+##$VisuGroupDepVals=( 2 )
+(<VisuAcqEchoTime>, 0) (<VisuFGElemComment>, 0)
+$$ @vis= VisuCoreDiskSliceOrder VisuPixel VisuFGOrderDescDim VisuFGOrderDesc
+##$VisuSubjectName=( 65 )
+<091719GS3>
+##$VisuSubjectId=( 65 )
+<091719GS3>
+##$VisuSubjectBirthDate=( 9 )
+<>
+$$ @vis= VisuGroupDepVals VisuFrameOrderDesc VisuSubjectName VisuSubjectId
+##$VisuSubjectSex=FEMALE
+##$VisuSubjectComment=( 2048 )
+<>
+##$VisuStudyUid=( 65 )
+<2.16.756.5.5.100.1359622924.22943.1568745718.3878>
+$$ @vis= VisuSubjectBirthDate VisuSubjectSex VisuSubjectComment VisuSubject
+##$VisuStudyDate=( 21 )
+<15:41:58 17 Sep 2019>
+##$VisuStudyId=( 65 )
+<091719GS3phantom>
+##$VisuStudyNumber=1
+##$VisuSubjectWeight=5
+$$ @vis= VisuStudyUid VisuStudyDate VisuStudyId VisuStudyNumber
+##$VisuStudyReferringPhysician=( 65 )
+<>
+##$VisuStudyDescription=( 65 )
+<>
+$$ @vis= VisuSubjectWeight VisuStudyReferringPhysician VisuStudyDescription
+##$VisuSeriesNumber=131073
+##$VisuSubjectPosition=Head_Supine
+##$VisuSeriesTypeId=( 65 )
+<ACQ_USER_PVM>
+$$ @vis= VisuStudy VisuSeriesNumber VisuSubjectPosition VisuSeriesTypeId
+##$VisuAcqSoftwareVersion=( 65 )
+<5.1>
+##$VisuInstitution=( 65 )
+<Mt Sinai Hosp>
+##$VisuStation=( 65 )
+<BioSpec 70/30>
+$$ @vis= VisuSeries VisuAcqSoftwareVersion VisuInstitution VisuStation
+##$VisuAcqDate=( 21 )
+<14:47:22 17 Sep 2019>
+##$VisuAcqEchoTrainLength=1
+##$VisuAcqSequenceName=( 40 )
+<fLASH_MP19F (pvm)>
+##$VisuAcqNumberOfAverages=4
+$$ @vis= VisuEquipment VisuAcqDate VisuAcqEchoTrainLength VisuAcqSequenceName
+##$VisuAcqImagingFrequency=300.333235693941
+##$VisuAcqImagedNucleus=( 8 )
+<1H>
+##$VisuAcqRepetitionTime=( 1 )
+10
+$$ @vis= VisuAcqNumberOfAverages VisuAcqImagingFrequency VisuAcqImagedNucleus
+##$VisuAcqPhaseEncSteps=128
+##$VisuAcqPixelBandwidth=348.772321428571
+##$VisuAcqFlipAngle=15
+$$ @vis= VisuAcqRepetitionTime VisuAcqPhaseEncSteps VisuAcqPixelBandwidth
+##$VisuAcqSize=( 3 )
+128 256 128
+##$VisuAcqImageSizeAccellerated=No
+##$VisuAcqImagePhaseEncDir=( 1 )
+row_slice_dir
+$$ @vis= VisuAcqFlipAngle VisuAcqSize VisuAcqImageSizeAccellerated
+##$VisuAcqEchoTime=( 1 )
+3.03593333333333
+##$VisuAcquisitionProtocol=( 65 )
+<FLASH_MP_1H_anatomy>
+##$VisuAcqScanTime=655360
+$$ @vis= VisuAcqImagePhaseEncDir VisuAcqEchoTime VisuAcquisitionProtocol
+$$ @vis= VisuAcqScanTime VisuAcquisition Visu
+##END=
