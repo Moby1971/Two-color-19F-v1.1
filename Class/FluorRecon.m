@@ -101,6 +101,8 @@ classdef FluorRecon
             R.P.CS = 1;                 % SET CS FLAG TO TRUE
             sampling_pct = 100*sum(sum(sum(K{1,1} ~= 0)))/numel(K{1,1});
             R.app.TextMessage(['Sampling percentage = ', num2str(sampling_pct), ' %']);
+            
+            
         end
         
         
@@ -250,7 +252,25 @@ classdef FluorRecon
                     
                     R.k = R.Functions.FB*abs(opInverse(R.Functions.FB)*R.k);
                 else
-                    TextMessage(R.app,"TO DO: Removing phase of image data for CS");
+                    % THIS PART IS A WORK IN PROGRESS
+                    TextMessage(R.app,"Removing phase of image data for undersampled acq... ");
+                    
+                    % block diagonal operator for CS (for PhaseRemoval)
+                    %                     for i = 1:size(R.Data.K,2)
+                    %                         R.P.Masks{i} = R.Data.K{1,1} ~= 0;
+                    %                     e
+%                     inp = [];
+%                     for ii = 1:R.P.nacq
+%                         inp = [inp,'opExcise(R.Functions.F3,~R.P.Masks{',num2str(ii),'}(:),''rows''),'];
+%                     end                        
+                        % something like this: opExcise(R.Functions.F3,~R.P.Masks{1}(:),'rows')
+                    % rows or columns? 
+                    % R.k needs to be made smaller (removal of same rows
+                    % --> in vectorize)
+                    R.Functions.FBCS=opExcise(R.Functions.FB, R.k==0, 'rows')
+                    R.Functions.iFBCS=opExcise(opInverse(R.Functions.FB),...
+                        R.k==0, 'columns')
+                    R.k(R.k ~=0) = R.Functions.FBCS*abs(R.Functions.iFBCS*R.k(R.k ~=0));
                 end
                 
             end
