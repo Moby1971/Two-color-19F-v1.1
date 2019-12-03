@@ -98,7 +98,9 @@ classdef FluorRecon
             
             R.Data.K = K;
             R.P.ScanParams = ScanParams;
-            
+            R.P.CS = 1;                 % SET CS FLAG TO TRUE
+            sampling_pct = 100*sum(sum(sum(K{1,1} ~= 0)))/numel(K{1,1});
+            R.app.TextMessage(['Sampling percentage = ', num2str(sampling_pct), ' %']);
         end
         
         
@@ -243,11 +245,14 @@ classdef FluorRecon
         function R = PhaseRemoval(R)
             
             if R.P.phaseremoval
+                if~ R.P.CS
+                    TextMessage(R.app,"Removing phase of image data ... ");
+                    
+                    R.k = R.Functions.FB*abs(opInverse(R.Functions.FB)*R.k);
+                else
+                    TextMessage(R.app,"TO DO: Removing phase of image data for CS");
+                end
                 
-                TextMessage(R.app,"Removing phase of image data ... ");
-                
-                R.k = R.Functions.FB*abs(opInverse(R.Functions.FB)*R.k); 
-            
             end
             
         end
@@ -375,6 +380,7 @@ classdef FluorRecon
             % R.P.Seq.ndirs                                     % number of readout directions
             
             % R.P.useGPU=0;                                     % using GPU (faster)
+            R.P.CS = 0;                                         % CS-accelerated acquisition.
             
         end
         
