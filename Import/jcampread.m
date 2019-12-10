@@ -101,6 +101,8 @@ if fid~=-1
                 end;
             end;
             
+            disp(paramname);
+            
             % Add paramvalue to structure.paramname
             if isempty(findstr(paramname,'_'))
                 eval(['struct.' paramname '= paramvalue;']);
